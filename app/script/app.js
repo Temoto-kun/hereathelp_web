@@ -93,7 +93,7 @@
 
             $rootScope.hideItem = function() {
                 $rootScope.currentItem = null;
-            };
+            }
 
             ItemService.loadItems()
                 .then(function() {
@@ -116,14 +116,7 @@
 
                         $rootScope.items[i].id = parseInt($rootScope.items[i].id);
 
-                        /*
-                        _.each($rootScope.items[i]['needs'], function(y, j) {
-                            var json = y['provision']['content'];
-                            console.log(json);
-                            var provision = JSON.parse(json);
-                            $rootScope.items[i]['needs'][j]['provision'] = provision;
-                        });
-                        */
+                        $rootScope.items[i]['location'] = location;
 
                         w.angular.element(document).ready(function() {
                             if($rootScope.dashboardMap == null) {
@@ -142,7 +135,7 @@
                                 }).addTo($rootScope.areaMap);
                             }
 
-                            $rootScope.items[i]['marker'] = w.L.marker($rootScope.items[i]['location'].split(','))
+                            $rootScope.items[i]['marker'] = w.L.marker($rootScope.items[i]['location'].coords.split(','))
                                 .addTo($rootScope.dashboardMap)
                                 .bindPopup(
                                     "<strong>" + $rootScope.items[i]['location'].nameString + "</strong><br>" +

@@ -111,14 +111,22 @@
             </div>
             <div class="hidden-xs col-sm-6" style="height: 100%;  overflow-y: auto;" ng-hide="currentItem == null">
                 <div>
-                    <div class="panel panel-default">
-                        <div class="panel-body">
-                            <h2 ng-bind="currentItem.location.nameString"></h2>
-                            <ul>
-                                <li>
-                                    Alive: {{ currentItem.est_alive }} | Dead: {{ currentItem.est_dead }}
-                                </li>
-                            </ul>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                Disaster
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <time>{{ currentItem.created_at }}</time>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <h2 ng-bind="currentItem.location.nameString"></h2>
+                            </div>
+                            <div class="col-xs-6 text-right">
+                                Alive: {{ currentItem.est_alive }} | Dead: {{ currentItem.est_dead }}
+                            </div>
                         </div>
                     </div>
                     <tabset justified="false" type="pills">
