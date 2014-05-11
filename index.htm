@@ -242,27 +242,10 @@
     </div>
     <div class="container-fluid" ng-hide="!isState('dashboard')">
         <div class="row">
-            <div class="col-sm-11 col-sm-push-1 col-xs-12">
+            <div class="col-xs-12 col-sm-push-1">
                 <div class="jumbotron">
                     <h1>{{ items.length }} <small>places needing assistance</small></h1>
                     <div id="dashboard-map"></div>
-                </div>
-            </div>
-            <div class="col-sm-1 col-sm-pull-11 hidden-xs" style="height: 100%; overflow-y: auto;">
-                <div class="btn-group">
-                    <label class="btn btn-primary" ng-model="filter.consumables" btn-checkbox><i
-                            class="fa fa-fw fa-cutlery"></i></label>
-                    <label class="btn btn-primary" ng-model="filter.clothing" btn-checkbox>Clo</label>
-                    <label class="btn btn-primary" ng-model="filter.health" btn-checkbox><i
-                            class="fa fa-fw fa-plus"></i></label>
-                    <label class="btn btn-primary" ng-model="filter.shelter" btn-checkbox><i
-                            class="fa fa-fw fa-home"></i></label>
-                    <label class="btn btn-primary" ng-model="filter.communication" btn-checkbox><i
-                            class="fa fa-fw fa-comments"></i></label>
-                    <label class="btn btn-primary" ng-model="filter.electricity" btn-checkbox><i
-                            class="fa fa-fw fa-bolt"></i></label>
-                    <label class="btn btn-primary" ng-model="filter.equipments" btn-checkbox><i
-                            class="fa fa-fw fa-wrench"></i></label>
                 </div>
             </div>
         </div>
