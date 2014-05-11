@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html ng-app="hereathelp">
+<head>
+    <meta charset="utf-8">
+    <title>{{ 'APP_ID' | translate }}</title>
+
+    <!-- Core styles -->
+    <link rel="stylesheet" type="text/css" href="lib/style/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="lib/style/bootstrap/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="lib/style/font-awesome/css/font-awesome.min.css">
+
+    <!-- Helper libs -->
+    <script type="text/javascript" src="lib/script/underscore/underscore-min.js"></script>
+    <script type="text/javascript" src="lib/script/angular/angular.min.js"></script>
+
+    <!-- UI scripts -->
+    <script type="text/javascript" src="lib/script/angular/ui-bootstrap-tpls-0.11.0.min.js"></script>
+    <script type="text/javascript" src="lib/script/angular/angular-ui-router/angular-ui-router.min.js"></script>
+    <script type="text/javascript" src="lib/script/angular/angular-translate/angular-translate.min.js"></script>
+
+    <!-- Map scripts -->
+    <link rel="stylesheet" type="text/css" href="lib/script/leaflet/leaflet.css">
+    <script type="text/javascript" src="lib/script/leaflet/leaflet.js"></script>
+
+    <style type="text/css">
+        html {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            width: 100%;
+            height: 100%;
+            padding-top: 70px;
+            /* padding-bottom: 70px; */
+            padding-bottom: 8px;
+        }
+
+        .navbar-brand .app-logo {
+            position: relative;
+            bottom: 25%;
+            max-width: 144px;
+        }
+
+        #dashboard-map {
+            height: 200px;
+        }
+    </style>
+</head>
+<body>
+<header class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar"
+                    ng-click="navbarCollapsed = !navbarCollapsed">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" ui-sref="items">
+                <img class="app-logo" src="app/images/Here@Help%20alt%20monochrome.png"
+                     alt="{{ 'APP_ID' | translate }}">
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="navbar" collapse="!navbarCollapsed">
+            <ul class="nav navbar-nav">
+                <li><a ui-sref="dashboard" ng-click="navbarCollapsed = false">Dashboard</a></li>
+                <li><a ui-sref="items" ng-click="navbarCollapsed = false">Stream</a></li>
+            </ul>
+            <form class="navbar-form navbar-left" role="search" ng-if="search">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search">
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+        </div>
+    </div>
+</header>
+
+<i class=""></i>
+
+<ui-view style="height: 100%;"></ui-view>
+
+<script id="stream" type="text/ng-template">
+    <div style="height: 100%;" class="container-fluid">
+        <div class="row" style="height: 100%;">
+            <div class="col-sm-1 hidden-xs" style="height: 100%; overflow-y: auto;">
+                <div class="btn-group">
+                    <label class="btn btn-primary" ng-model="filter.consumables" btn-checkbox><i
+                            class="fa fa-fw fa-cutlery"></i></label>
+                    <label class="btn btn-primary" ng-model="filter.clothing" btn-checkbox>Clo</label>
+                    <label class="btn btn-primary" ng-model="filter.health" btn-checkbox><i
+                            class="fa fa-fw fa-plus"></i></label>
+                    <label class="btn btn-primary" ng-model="filter.shelter" btn-checkbox><i
+                            class="fa fa-fw fa-home"></i></label>
+                    <label class="btn btn-primary" ng-model="filter.communication" btn-checkbox><i
+                            class="fa fa-fw fa-comments"></i></label>
+                    <label class="btn btn-primary" ng-model="filter.electricity" btn-checkbox><i
+                            class="fa fa-fw fa-bolt"></i></label>
+                    <label class="btn btn-primary" ng-model="filter.equipments" btn-checkbox><i
+                            class="fa fa-fw fa-wrench"></i></label>
+                </div>
+            </div>
+            <div class="hidden-xs col-sm-5" style="height: 100%; overflow-y: auto;">
+                <div class="panel panel-default" ng-repeat="item in items">
+                    <div class="panel-heading">
+                        Icons
+                    </div>
+                    <div class="panel-body">
+                        <h2><a ui-sref="items.view({ id: item.id })" ng-bind="item.location.nameString"></a></h2>
+                        <ul>
+                            <li>
+                                Alive: {{ item.est_alive }} | Dead: {{ item.est_dead }}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="hidden-xs col-sm-6" style="height: 100%;  overflow-y: auto;">
+                <ui-view name="info"></ui-view>
+            </div>
+            <div class="visible-xs col-xs-12" ng-if="isState('items')">
+                <div class="panel panel-default" ng-repeat="item in items">
+                    <div class="panel-heading">
+                        Icons
+                    </div>
+                    <div class="panel-body">
+                        <h2><a ui-sref="items.view({ id: item.id })" ng-bind="item.location.nameString"></a></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="visible-xs col-xs-12" ng-if="isState('items.view')">
+                <ui-view name="info"></ui-view>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="item" type="text/ng-template">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <h2 ng-bind="item.location.nameString"></h2>
+            <ul>
+                <li>
+                    Alive: {{ item.est_alive }} | Dead: {{ item.est_dead }}
+                </li>
+            </ul>
+        </div>
+    </div>
+    <tabset justified="false" type="pills">
+        <tab heading="Area">
+            <a ui-sref="item.route" class="btn btn-default">Click to view possible routes</a>
+        </tab>
+        <tab heading="Needs">
+            <tabset justified="false">
+                <tab ng-repeat="needCat1 in item.priorities">
+                    <tab-heading>
+                        {{ needCat1.name }}
+                    </tab-heading>
+                    <ul>
+                        <li ng-repeat="needCat2 in needCat1.children">
+                            <h2>{{needCat2.name}}</h2>
+                            <ul ng-if="needCat2.children !== undefined">
+                                <li ng-repeat="needCat3 in needCat2.children">
+                                    <h3>{{needCat3.name}}</h3>
+                                    <ul ng-if="needCat3.children !== undefined">
+                                        <li ng-repeat="needCat4 in needCat3.children">
+                                            <h4>{{needCat4.name}}</h4>
+                                            <ul ng-if="needCat4.children !== undefined">
+                                                <li ng-repeat="needCat5 in needCat4.children">
+                                                    <h5>{{needCat5.name}}</h5>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </tab>
+            </tabset>
+        </tab>
+        <tab heading="Transportation">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xs-6">
+                        Distance to location
+                    </div>
+                    <div class="col-xs-6">
+                        1337
+                        <small>km</small>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        Accessible by
+                    </div>
+                    <div class="col-xs-6">
+                        Icons
+                    </div>
+                </div>
+            </div>
+        </tab>
+        <tab heading="Assessment">
+            <carousel>
+                <slide>A</slide>
+                <slide>B</slide>
+                <slide>C</slide>
+            </carousel>
+        </tab>
+    </tabset>
+</script>
+
+<script id="dashboard" type="text/ng-template">
+    <div class="container-fluid">
+        <div class="row">
+
+            <div class="col-sm-11 col-sm-push-1 col-xs-12">
+                <div class="jumbotron">
+                    <h1>{{ items.length }} <small>places needing assistance</small></h1>
+                    <div id="dashboard-map"></div>
+                </div>
+            </div>
+            <div class="col-sm-1 col-sm-pull-11 hidden-xs" style="height: 100%; overflow-y: auto;">
+                <div class="btn-group">
+                    <label class="btn btn-primary" ng-model="filter.consumables" btn-checkbox><i
+                            class="fa fa-fw fa-cutlery"></i></label>
+                    <label class="btn btn-primary" ng-model="filter.clothing" btn-checkbox>Clo</label>
+                    <label class="btn btn-primary" ng-model="filter.health" btn-checkbox><i
+                            class="fa fa-fw fa-plus"></i></label>
+                    <label class="btn btn-primary" ng-model="filter.shelter" btn-checkbox><i
+                            class="fa fa-fw fa-home"></i></label>
+                    <label class="btn btn-primary" ng-model="filter.communication" btn-checkbox><i
+                            class="fa fa-fw fa-comments"></i></label>
+                    <label class="btn btn-primary" ng-model="filter.electricity" btn-checkbox><i
+                            class="fa fa-fw fa-bolt"></i></label>
+                    <label class="btn btn-primary" ng-model="filter.equipments" btn-checkbox><i
+                            class="fa fa-fw fa-wrench"></i></label>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<!-- App scripts -->
+<script type="text/javascript" src="app/script/services.js"></script>
+<script type="text/javascript" src="app/script/controllers.js"></script>
+<script type="text/javascript" src="app/script/app.js"></script>
+</body>
+</html>
