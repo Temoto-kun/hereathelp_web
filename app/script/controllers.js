@@ -3,8 +3,8 @@
 	w.hereAtHelp.controllers = w.angular.module('hereathelp.controllers', []);
 
 	w.hereAtHelp.controllers
-		.controller('ItemCtrl', function($scope, $stateParams, ItemService) {
-			$scope.item = ItemService.get(parseInt($stateParams.id));
+		.controller('ItemCtrl', function($rootScope, $stateParams, ItemService) {
+			$rootScope.item = ItemService.get(parseInt($stateParams.id));
 		})
 	;
 })(window);

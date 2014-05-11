@@ -13,22 +13,14 @@
 		.config(function($stateProvider, $urlRouterProvider) {
 			$stateProvider
 				.state('items', {
-					url: '/items',
-					templateUrl: 'stream'
+					url: '/items'
 				})
 				.state('items.view', {
 					url: '/:id',
-                    parent: 'items',
-                    views: {
-                        'info': {
-                            templateUrl: 'item',
-                            controller: 'ItemCtrl'
-                        }
-                    }
+                    parent: 'items'
 				})
                 .state('dashboard', {
-                    url: '/dashboard',
-                    templateUrl: 'dashboard'
+                    url: '/dashboard'
                 })
 			// TODO more states here...
 			;
@@ -75,18 +67,26 @@
 			$rootScope.title = "Here@Help";
 
             $rootScope.isState = function(state) {
-                return state == $state.current.name;
+                return $state.includes(state);
             };
 
-            $rootScope.map = null;
+            $rootScope.dashboardMap = null;
+            $rootScope.areaMap = null;
 
             $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
-                //
             });
 
             function parseJson(obj) {
                 obj = JSON.parse(obj);
             }
+
+            $rootScope.showItem = function(id) {
+                $rootScope.currentItem = ItemService.get(parseInt(id));
+                $rootScope.areaMap.setView($rootScope.currentItem.location.coords.split(','), 14);
+                $rootScope.areaMapMarker = $rootScope.areaMapMarker || w.L.marker($rootScope.currentItem.location.coords.split(',')).addTo($rootScope.areaMap);
+                $rootScope.areaMapMarker.setLatLng($rootScope.currentItem.location.coords.split(','));
+
+            };
 
             ItemService.loadItems()
                 .then(function() {
@@ -112,16 +112,24 @@
                         $rootScope.items[i]['location'] = location;
 
                         w.angular.element(document).ready(function() {
-                            if($rootScope.map == null) {
-                                $rootScope.map = w.L.map('dashboard-map').setView([0, 0], 3);
+                            if($rootScope.dashboardMap == null) {
+                                $rootScope.dashboardMap = w.L.map('dashboard-map').setView([0, 0], 2);
 
                                 w.L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
                                     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                                }).addTo($rootScope.map);
+                                }).addTo($rootScope.dashboardMap);
+                            }
+
+                            if($rootScope.areaMap == null) {
+                                $rootScope.areaMap = w.L.map('area-map').setView([0, 0], 2);
+
+                                w.L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+                                    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                                }).addTo($rootScope.areaMap);
                             }
 
                             $rootScope.items[i]['marker'] = w.L.marker($rootScope.items[i]['location'].coords.split(','))
-                                .addTo($rootScope.map)
+                                .addTo($rootScope.dashboardMap)
                                 .bindPopup(
                                     "<strong>" + $rootScope.items[i]['location'].nameString + "</strong><br>" +
                                         "Affected: " + (parseInt($rootScope.items[i]['est_alive']) + parseInt($rootScope.items[i]['est_dead'])) + "<br>" +

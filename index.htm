@@ -6,7 +6,6 @@
 
     <!-- Core styles -->
     <link rel="stylesheet" type="text/css" href="lib/style/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="lib/style/bootstrap/css/bootstrap-theme.min.css">
     <link rel="stylesheet" type="text/css" href="lib/style/font-awesome/css/font-awesome.min.css">
 
     <!-- Helper libs -->
@@ -43,14 +42,17 @@
         }
 
         #dashboard-map {
-            height: 200px;
+            height: 400px;
+        }
+
+        #area-map {
+            height: 400px;
         }
     </style>
 </head>
 <body>
 <header class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar"
                     ng-click="navbarCollapsed = !navbarCollapsed">
@@ -65,11 +67,10 @@
             </a>
         </div>
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="navbar" collapse="!navbarCollapsed">
             <ul class="nav navbar-nav">
-                <li><a ui-sref="dashboard" ng-click="navbarCollapsed = false">Dashboard</a></li>
-                <li><a ui-sref="items" ng-click="navbarCollapsed = false">Stream</a></li>
+                <li ng-class="isState('dashboard') ? 'active' : ''"><a ui-sref="dashboard" ng-click="navbarCollapsed = false">Dashboard</a></li>
+                <li ng-class="isState('items') ? 'active' : ''"><a ui-sref="items" ng-click="navbarCollapsed = false">Stream</a></li>
             </ul>
             <form class="navbar-form navbar-left" role="search" ng-if="search">
                 <div class="form-group">
@@ -81,12 +82,8 @@
     </div>
 </header>
 
-<i class=""></i>
-
-<ui-view style="height: 100%;"></ui-view>
-
-<script id="stream" type="text/ng-template">
-    <div style="height: 100%;" class="container-fluid">
+<div style="height: 100%">
+    <div style="height: 100%;" class="container-fluid" ng-hide="!isState('items')">
         <div class="row" style="height: 100%;">
             <div class="col-sm-1 hidden-xs" style="height: 100%; overflow-y: auto;">
                 <div class="btn-group">
@@ -111,114 +108,105 @@
                         Icons
                     </div>
                     <div class="panel-body">
-                        <h2><a ui-sref="items.view({ id: item.id })" ng-bind="item.location.nameString"></a></h2>
-                        <ul>
-                            <li>
+                        <div class="row">
+                            <div class="col-xs-3">
+                                Disaster
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <time>2014-03-02</time>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <h2><a ui-sref="items.view({ id: item.id })" ng-click="showItem(item.id)" ng-bind="item.location.nameString"></a></h2>
+                            </div>
+                            <div class="col-xs-6 text-right">
                                 Alive: {{ item.est_alive }} | Dead: {{ item.est_dead }}
-                            </li>
-                        </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="hidden-xs col-sm-6" style="height: 100%;  overflow-y: auto;">
-                <ui-view name="info"></ui-view>
+                <div>
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <h2 ng-bind="currentItem.location.nameString"></h2>
+                            <ul>
+                                <li>
+                                    Alive: {{ currentItem.est_alive }} | Dead: {{ currentItem.est_dead }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <tabset justified="false" type="pills">
+                        <tab heading="Area">
+                            <div id="area-map"></div>
+                        </tab>
+                        <tab heading="Needs">
+                            <tabset justified="false">
+                                <tab ng-repeat="needCat1 in currentItem.priorities">
+                                    <tab-heading>
+                                        {{ needCat1.name }}
+                                    </tab-heading>
+                                    <ul>
+                                        <li ng-repeat="needCat2 in needCat1.children">
+                                            <h2>{{needCat2.name}}</h2>
+                                            <ul ng-if="needCat2.children !== undefined">
+                                                <li ng-repeat="needCat3 in needCat2.children">
+                                                    <h3>{{needCat3.name}}</h3>
+                                                    <ul ng-if="needCat3.children !== undefined">
+                                                        <li ng-repeat="needCat4 in needCat3.children">
+                                                            <h4>{{needCat4.name}}</h4>
+                                                            <ul ng-if="needCat4.children !== undefined">
+                                                                <li ng-repeat="needCat5 in needCat4.children">
+                                                                    <h5>{{needCat5.name}}</h5>
+                                                                </li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </tab>
+                            </tabset>
+                        </tab>
+                    </tabset>
+                </div>
             </div>
-            <div class="visible-xs col-xs-12" ng-if="isState('items')">
+            <div class="visible-xs col-xs-12">
                 <div class="panel panel-default" ng-repeat="item in items">
                     <div class="panel-heading">
                         Icons
                     </div>
                     <div class="panel-body">
-                        <h2><a ui-sref="items.view({ id: item.id })" ng-bind="item.location.nameString"></a></h2>
+                        <div class="row">
+                            <div class="col-xs-3">
+                                Disaster
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <time>2014-03-02</time>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <h2><a ui-sref="items.view({ id: item.id })" ng-click="showItem(item.id)" ng-bind="item.location.nameString"></a></h2>
+                            </div>
+                            <div class="col-xs-6 text-right">
+                                Alive: {{ item.est_alive }} | Dead: {{ item.est_dead }}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="visible-xs col-xs-12" ng-if="isState('items.view')">
-                <ui-view name="info"></ui-view>
+            <div class="visible-xs col-xs-12">
+                <ui-view name="info">No report selected.</ui-view>
             </div>
         </div>
     </div>
-</script>
-
-<script id="item" type="text/ng-template">
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <h2 ng-bind="item.location.nameString"></h2>
-            <ul>
-                <li>
-                    Alive: {{ item.est_alive }} | Dead: {{ item.est_dead }}
-                </li>
-            </ul>
-        </div>
-    </div>
-    <tabset justified="false" type="pills">
-        <tab heading="Area">
-            <a ui-sref="item.route" class="btn btn-default">Click to view possible routes</a>
-        </tab>
-        <tab heading="Needs">
-            <tabset justified="false">
-                <tab ng-repeat="needCat1 in item.priorities">
-                    <tab-heading>
-                        {{ needCat1.name }}
-                    </tab-heading>
-                    <ul>
-                        <li ng-repeat="needCat2 in needCat1.children">
-                            <h2>{{needCat2.name}}</h2>
-                            <ul ng-if="needCat2.children !== undefined">
-                                <li ng-repeat="needCat3 in needCat2.children">
-                                    <h3>{{needCat3.name}}</h3>
-                                    <ul ng-if="needCat3.children !== undefined">
-                                        <li ng-repeat="needCat4 in needCat3.children">
-                                            <h4>{{needCat4.name}}</h4>
-                                            <ul ng-if="needCat4.children !== undefined">
-                                                <li ng-repeat="needCat5 in needCat4.children">
-                                                    <h5>{{needCat5.name}}</h5>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </tab>
-            </tabset>
-        </tab>
-        <tab heading="Transportation">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-xs-6">
-                        Distance to location
-                    </div>
-                    <div class="col-xs-6">
-                        1337
-                        <small>km</small>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-6">
-                        Accessible by
-                    </div>
-                    <div class="col-xs-6">
-                        Icons
-                    </div>
-                </div>
-            </div>
-        </tab>
-        <tab heading="Assessment">
-            <carousel>
-                <slide>A</slide>
-                <slide>B</slide>
-                <slide>C</slide>
-            </carousel>
-        </tab>
-    </tabset>
-</script>
-
-<script id="dashboard" type="text/ng-template">
-    <div class="container-fluid">
+    <div class="container-fluid" ng-hide="!isState('dashboard')">
         <div class="row">
-
             <div class="col-sm-11 col-sm-push-1 col-xs-12">
                 <div class="jumbotron">
                     <h1>{{ items.length }} <small>places needing assistance</small></h1>
@@ -244,7 +232,7 @@
             </div>
         </div>
     </div>
-</script>
+</div>
 
 <!-- App scripts -->
 <script type="text/javascript" src="app/script/services.js"></script>
