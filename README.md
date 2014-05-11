@@ -1,3 +1,4 @@
+[![Here@Help](https://raw.githubusercontent.com/pup-progguild/hereathelp_api/master/public/img/here_help_monochrome_long.png)](https://github.com/pup-progguild/hereathelp_api)
 # Here@Help Web
 
 Here@Help - for disaster mitigation and response! With awesomeness.
