@@ -72,6 +72,7 @@
 
             $rootScope.dashboardMap = null;
             $rootScope.areaMap = null;
+            $rootScope.currentItem = null;
 
             $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
             });
@@ -82,10 +83,16 @@
 
             $rootScope.showItem = function(id) {
                 $rootScope.currentItem = ItemService.get(parseInt(id));
+
+                console.log($rootScope.currentItem);
                 $rootScope.areaMap.setView($rootScope.currentItem.location.coords.split(','), 14);
                 $rootScope.areaMapMarker = $rootScope.areaMapMarker || w.L.marker($rootScope.currentItem.location.coords.split(',')).addTo($rootScope.areaMap);
                 $rootScope.areaMapMarker.setLatLng($rootScope.currentItem.location.coords.split(','));
 
+            };
+
+            $rootScope.hideItem = function() {
+                $rootScope.currentItem = null;
             };
 
             ItemService.loadItems()
@@ -109,7 +116,12 @@
 
                         $rootScope.items[i].id = parseInt($rootScope.items[i].id);
 
-                        $rootScope.items[i]['location'] = location;
+                        _.each($rootScope.items[i]['needs'], function(y, j) {
+                            var json = y['provision']['content'].trim();
+                            console.log(json);
+                            var provision = JSON.parse(json);
+                            $rootScope.items[i]['needs'][j]['provision'] = provision;
+                        });
 
                         w.angular.element(document).ready(function() {
                             if($rootScope.dashboardMap == null) {
@@ -133,7 +145,7 @@
                                 .bindPopup(
                                     "<strong>" + $rootScope.items[i]['location'].nameString + "</strong><br>" +
                                         "Affected: " + (parseInt($rootScope.items[i]['est_alive']) + parseInt($rootScope.items[i]['est_dead'])) + "<br>" +
-                                        '<a href="#/items/' + $rootScope.items[i]['id'] + '">View</a>');
+                                        '<a href="#/items" ng-click="showItem(' + $rootScope.items[i]['id'] + ')">View</a>');
                         });
                     });
                 });

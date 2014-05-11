@@ -31,7 +31,6 @@
             width: 100%;
             height: 100%;
             padding-top: 70px;
-            /* padding-bottom: 70px; */
             padding-bottom: 8px;
         }
 
@@ -61,7 +60,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" ui-sref="items">
+            <a class="navbar-brand" ui-sref="items" ng-click="hideItem()">
                 <img class="app-logo" src="app/images/Here@Help%20alt%20monochrome.png"
                      alt="{{ 'APP_ID' | translate }}">
             </a>
@@ -85,6 +84,7 @@
 <div style="height: 100%">
     <div style="height: 100%;" class="container-fluid" ng-hide="!isState('items')">
         <div class="row" style="height: 100%;">
+            <!--
             <div class="col-sm-1 hidden-xs" style="height: 100%; overflow-y: auto;">
                 <div class="btn-group">
                     <label class="btn btn-primary" ng-model="filter.consumables" btn-checkbox><i
@@ -102,7 +102,8 @@
                             class="fa fa-fw fa-wrench"></i></label>
                 </div>
             </div>
-            <div class="hidden-xs col-sm-5" style="height: 100%; overflow-y: auto;">
+            -->
+            <div class="hidden-xs col-sm-6" style="height: 100%; overflow-y: auto;">
                 <div class="panel panel-default" ng-repeat="item in items">
                     <div class="panel-heading">
                         Icons
@@ -113,12 +114,12 @@
                                 Disaster
                             </div>
                             <div class="col-xs-9 text-right">
-                                <time>2014-03-02</time>
+                                <time>{{ item.created_at }}</time>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-xs-6">
-                                <h2><a ui-sref="items.view({ id: item.id })" ng-click="showItem(item.id)" ng-bind="item.location.nameString"></a></h2>
+                                <h2><a href="" ng-click="showItem(item.id)" ng-bind="item.location.nameString"></a></h2>
                             </div>
                             <div class="col-xs-6 text-right">
                                 Alive: {{ item.est_alive }} | Dead: {{ item.est_dead }}
@@ -127,7 +128,7 @@
                     </div>
                 </div>
             </div>
-            <div class="hidden-xs col-sm-6" style="height: 100%;  overflow-y: auto;">
+            <div class="hidden-xs col-sm-6" style="height: 100%;  overflow-y: auto;" ng-hide="currentItem == null">
                 <div>
                     <div class="panel panel-default">
                         <div class="panel-body">
@@ -145,7 +146,80 @@
                         </tab>
                         <tab heading="Needs">
                             <tabset justified="false">
-                                <tab ng-repeat="needCat1 in currentItem.priorities">
+                                <tab ng-repeat="needCat1 in currentItem.needs">
+                                    <tab-heading>
+                                        {{ needCat1.title }}
+                                    </tab-heading>
+                                    <ul>
+                                        <li ng-repeat="needCat2 in needCat1.children">
+                                            <h2>{{needCat2.name}}</h2>
+                                            <ul ng-if="needCat2.children !== undefined">
+                                                <li ng-repeat="needCat3 in needCat2.children">
+                                                    <h3>{{needCat3.name}}</h3>
+                                                    <ul ng-if="needCat3.children !== undefined">
+                                                        <li ng-repeat="needCat4 in needCat3.children">
+                                                            <h4>{{needCat4.name}}</h4>
+                                                            <ul ng-if="needCat4.children !== undefined">
+                                                                <li ng-repeat="needCat5 in needCat4.children">
+                                                                    <h5>{{needCat5.name}}</h5>
+                                                                </li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </tab>
+                            </tabset>
+                        </tab>
+                    </tabset>
+                </div>
+            </div>
+            <div class="visible-xs col-xs-12" ng-hide="currentItem != null">
+                <div class="panel panel-default" ng-repeat="item in items">
+                    <div class="panel-heading">
+                        Icons
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                Disaster
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <time>{{ item.created_at }}</time>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <h2><a href="" ng-click="showItem(item.id)" ng-bind="item.location.nameString"></a></h2>
+                            </div>
+                            <div class="col-xs-6 text-right">
+                                Alive: {{ item.est_alive }} | Dead: {{ item.est_dead }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="visible-xs col-xs-12" ng-hide="currentItem == null">
+                <div>
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <h2 ng-bind="currentItem.location.nameString"></h2>
+                            <ul>
+                                <li>
+                                    Alive: {{ currentItem.est_alive }} | Dead: {{ currentItem.est_dead }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <tabset justified="false" type="pills">
+                        <tab heading="Area">
+                            <div id="area-map-mobile"></div>
+                        </tab>
+                        <tab heading="Needs">
+                            <tabset justified="false">
+                                <tab ng-repeat="needCat1 in currentItem.needs">
                                     <tab-heading>
                                         {{ needCat1.name }}
                                     </tab-heading>
@@ -174,34 +248,6 @@
                         </tab>
                     </tabset>
                 </div>
-            </div>
-            <div class="visible-xs col-xs-12">
-                <div class="panel panel-default" ng-repeat="item in items">
-                    <div class="panel-heading">
-                        Icons
-                    </div>
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-xs-3">
-                                Disaster
-                            </div>
-                            <div class="col-xs-9 text-right">
-                                <time>2014-03-02</time>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-6">
-                                <h2><a ui-sref="items.view({ id: item.id })" ng-click="showItem(item.id)" ng-bind="item.location.nameString"></a></h2>
-                            </div>
-                            <div class="col-xs-6 text-right">
-                                Alive: {{ item.est_alive }} | Dead: {{ item.est_dead }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="visible-xs col-xs-12">
-                <ui-view name="info">No report selected.</ui-view>
             </div>
         </div>
     </div>
