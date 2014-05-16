@@ -44,7 +44,7 @@
             height: 400px;
         }
 
-        #area-map {
+        .area-map {
             height: 400px;
         }
     </style>
@@ -83,8 +83,8 @@
 
 <div style="height: 100%">
     <div style="height: 100%;" class="container-fluid" ng-hide="!isState('items')">
-        <div class="row" style="height: 100%;">
-            <div class="hidden-xs col-sm-6" style="height: 100%; overflow-y: auto;">
+        <div class="row hidden-xs " style="height: 100%;">
+            <div class="col-sm-6" style="height: 100%; overflow-y: auto;">
                 <div class="panel panel-default" ng-repeat="item in items">
                     <div class="panel-heading">
                         Icons
@@ -109,9 +109,9 @@
                     </div>
                 </div>
             </div>
-            <div class="hidden-xs col-sm-6" style="height: 100%;  overflow-y: auto;" ng-hide="currentItem == null">
+            <div class="col-sm-6" style="height: 100%;  overflow-y: auto;" ng-hide="currentItem == null">
                 <div>
-                    <div class="panel-body">
+                    <div>
                         <div class="row">
                             <div class="col-xs-3">
                                 Disaster
@@ -131,7 +131,7 @@
                     </div>
                     <tabset justified="false" type="pills">
                         <tab heading="Area">
-                            <div id="area-map"></div>
+                            <div id="area-map" class="area-map"></div>
                         </tab>
                         <tab heading="Needs">
                             <tabset justified="false">
@@ -165,7 +165,9 @@
                     </tabset>
                 </div>
             </div>
-            <div class="visible-xs col-xs-12" ng-hide="currentItem != null">
+        </div>
+        <div class="row visible-xs">
+            <div class="col-xs-12" ng-hide="currentItem != null">
                 <div class="panel panel-default" ng-repeat="item in items">
                     <div class="panel-heading">
                         Icons
@@ -190,27 +192,35 @@
                     </div>
                 </div>
             </div>
-            <div class="visible-xs col-xs-12" ng-hide="currentItem == null">
+            <div class="col-xs-12" ng-hide="currentItem == null">
                 <div>
-                    <div class="panel panel-default">
-                        <div class="panel-body">
-                            <h2 ng-bind="currentItem.location.nameString"></h2>
-                            <ul>
-                                <li>
-                                    Alive: {{ currentItem.est_alive }} | Dead: {{ currentItem.est_dead }}
-                                </li>
-                            </ul>
+                    <div>
+                        <div class="row">
+                            <div class="col-xs-3">
+                                Disaster
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <time>{{ currentItem.created_at }}</time>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <h2 ng-bind="currentItem.location.nameString"></h2>
+                            </div>
+                            <div class="col-xs-6 text-right">
+                                Alive: {{ currentItem.est_alive }} | Dead: {{ currentItem.est_dead }}
+                            </div>
                         </div>
                     </div>
                     <tabset justified="false" type="pills">
                         <tab heading="Area">
-                            <div id="area-map-mobile"></div>
+                            <div id="area-map-mobile" class="area-map"></div>
                         </tab>
                         <tab heading="Needs">
                             <tabset justified="false">
                                 <tab ng-repeat="needCat1 in currentItem.needs">
                                     <tab-heading>
-                                        {{ needCat1.name }}
+                                        {{ needCat1.title }}
                                     </tab-heading>
                                     <ul>
                                         <li ng-repeat="needCat2 in needCat1.children">
@@ -242,7 +252,7 @@
     </div>
     <div class="container-fluid" ng-hide="!isState('dashboard')">
         <div class="row">
-            <div class="col-xs-12 col-sm-push-1">
+            <div class="col-xs-12">
                 <div class="jumbotron">
                     <h1>{{ items.length }} <small>places needing assistance</small></h1>
                     <div id="dashboard-map"></div>

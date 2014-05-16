@@ -71,7 +71,20 @@
             };
 
             $rootScope.dashboardMap = null;
-            $rootScope.areaMap = null;
+            $rootScope.areaMaps = {
+                'large': {
+                    id: 'area-map',
+                    map: null,
+                    marker: null,
+                    bounds: null
+                },
+                'mobile': {
+                    id: 'area-map-mobile',
+                    map: null,
+                    marker: null,
+                    bounds: null
+                }
+            };
             $rootScope.currentItem = null;
 
             $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
@@ -85,15 +98,31 @@
                 $rootScope.currentItem = ItemService.get(parseInt(id));
 
                 console.log($rootScope.currentItem);
-                $rootScope.areaMap.setView($rootScope.currentItem.location.coords.split(','), 14);
-                $rootScope.areaMapMarker = $rootScope.areaMapMarker || w.L.marker($rootScope.currentItem.location.coords.split(',')).addTo($rootScope.areaMap);
-                $rootScope.areaMapMarker.setLatLng($rootScope.currentItem.location.coords.split(','));
+                _.each($rootScope.areaMaps, function(x, i) {
+                    console.log($rootScope.currentItem.geobounds);
+                    if($rootScope.areaMaps[i].bounds == null) {
+                        $rootScope.areaMaps[i].bounds = w.L.polygon($rootScope.currentItem.geobounds, { color: '#0000FF', weight: 8, fill: false });
+                        $rootScope.areaMaps[i].map.addLayer($rootScope.areaMaps[i].bounds);
+                    }
+                    else
+                        $rootScope.areaMaps[i].bounds.setLatLngs($rootScope.currentItem.geobounds);
 
+                    console.log($rootScope.currentItem);
+                    $rootScope.areaMaps[i].map.panTo($rootScope.currentItem.location.coords.split(','));
+
+                    if($rootScope.areaMaps[i].marker == null)
+                        $rootScope.areaMaps[i].marker = w.L.marker($rootScope.currentItem.location.coords.split(','))
+                            .addTo($rootScope.areaMaps[i].map);
+                    else
+                        $rootScope.areaMaps[i].marker.setLatLng($rootScope.currentItem.location.coords.split(','));
+
+
+                });
             };
 
             $rootScope.hideItem = function() {
                 $rootScope.currentItem = null;
-            }
+            };
 
             ItemService.loadItems()
                 .then(function() {
@@ -115,8 +144,22 @@
                         ].join(', ');
 
                         $rootScope.items[i].id = parseInt($rootScope.items[i].id);
-
                         $rootScope.items[i]['location'] = location;
+
+                        var geobounds = $rootScope.items[i]['geobounds'].split(';');
+                        _.each(geobounds, function(y, j) {
+                            geobounds[j] = geobounds[j].split(',');
+                            geobounds[j] = { lat: geobounds[j][0], lng: geobounds[j][1] }
+                        });
+                        $rootScope.items[i]['geobounds'] = geobounds;
+
+                        _.each($rootScope.items[i].needs, function(y, j) {
+                            var json = JSON.parse($rootScope.items[i].needs[j].provision);
+
+                            $rootScope.items[i].needs[j].provision = json;
+                        });
+
+                        console.log($rootScope.items[i]);
 
                         w.angular.element(document).ready(function() {
                             if($rootScope.dashboardMap == null) {
@@ -127,20 +170,41 @@
                                 }).addTo($rootScope.dashboardMap);
                             }
 
-                            if($rootScope.areaMap == null) {
-                                $rootScope.areaMap = w.L.map('area-map').setView([0, 0], 2);
-
-                                w.L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-                                    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                                }).addTo($rootScope.areaMap);
-                            }
-
                             $rootScope.items[i]['marker'] = w.L.marker($rootScope.items[i]['location'].coords.split(','))
                                 .addTo($rootScope.dashboardMap)
                                 .bindPopup(
+                                    "<em>" + "Disaster" + "</em>" +
                                     "<strong>" + $rootScope.items[i]['location'].nameString + "</strong><br>" +
                                         "Affected: " + (parseInt($rootScope.items[i]['est_alive']) + parseInt($rootScope.items[i]['est_dead'])) + "<br>" +
                                         '<a href="#/items" ng-click="showItem(' + $rootScope.items[i]['id'] + ')">View</a>');
+
+                            _.each($rootScope.areaMaps, function(y, j) {
+                                if($rootScope.areaMaps[j].map == null) {
+                                    $rootScope.areaMaps[j].map = w.L.map($rootScope.areaMaps[j].id).setView([0, 0], 14);
+
+                                $rootScope.areaMaps[j].map.on('moveend', function(e) {
+                                    _.each($rootScope.areaMaps, function(z, k) {
+                                        if(j == k)
+                                            return;
+                                        var center = e.target.getCenter();
+                                        $rootScope.areaMaps[k].map.panTo([center.lat, center.lng], { animate: false });
+                                    });
+                                });
+
+                                $rootScope.areaMaps[j].map.on('zoomend', function(e) {
+                                    _.each($rootScope.areaMaps, function(z, k) {
+                                        if(j == k)
+                                            return;
+                                        $rootScope.areaMaps[k].map.setZoom(e.target.getZoom(), { animate: false });
+                                    });
+                                });
+
+                                w.L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+                                    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                                })
+                                    .addTo($rootScope.areaMaps[j].map);
+                                }
+                            });
                         });
                     });
                 });
