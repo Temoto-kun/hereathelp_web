@@ -138,20 +138,20 @@
             <tab heading="Needs">
               <tabset justified="false">
                 <tab ng-repeat="needCat1 in currentItem.needs">
-                  <tab-heading ng-if="needCat1.value == 1">
+                  <tab-heading ng-if="needCat1.value == 1 || needCat1.children.length > 0">
                     {{ needCat1.title }}
                   </tab-heading>
                   <ul>
-                    <li ng-repeat="needCat2 in needCat1.provision" ng-if="needCat2.value == 1">
+                    <li ng-repeat="needCat2 in needCat1.provision" ng-if="needCat2.value == 1 || needCat2.children.length > 0">
                       <h2 ng-bind="needCat2.name"></h2>
                       <ul ng-if="needCat2.children !== undefined">
-                        <li ng-repeat="needCat3 in needCat2.children" ng-if="needCat3.value == 1">
+                        <li ng-repeat="needCat3 in needCat2.children" ng-if="needCat3.value == 1 || needCat3.children.length > 0">
                           <h3 ng-bind="needCat3.name"></h3>
                           <ul ng-if="needCat3.children !== undefined">
-                            <li ng-repeat="needCat4 in needCat3.children" ng-if="needCat4.value == 1">
+                            <li ng-repeat="needCat4 in needCat3.children" ng-if="needCat4.value == 1 || needCat4.children.length > 0">
                               <h4 ng-bind="needCat4.name"></h4>
                               <ul ng-if="needCat4.children !== undefined">
-                                <li ng-repeat="needCat5 in needCat4.children" ng-if="needCat5.value == 1">
+                                <li ng-repeat="needCat5 in needCat4.children" ng-if="needCat5.value == 1 || needCat5.children.length > 0">
                                   <h5 ng-bind="needCat5.name"></h5>
                                 </li>
                               </ul>
@@ -221,21 +221,20 @@
             <tab heading="Needs">
               <tabset justified="false">
                 <tab ng-repeat="needCat1 in currentItem.needs">
-                  <tab-heading>
+                  <tab-heading ng-if="needCat1.value == 1 || needCat1.children.length > 0">
                     {{ needCat1.title }}
                   </tab-heading>
                   <ul>
-                    <li ng-repeat="needCat2 in needCat1.provision"
-                        ng-if="needCat2.value == 1">
+                    <li ng-repeat="needCat2 in needCat1.provision" ng-if="needCat2.value == 1 || needCat2.children.length > 0">
                       <h2 ng-bind="needCat2.name"></h2>
                       <ul ng-if="needCat2.children !== undefined">
-                        <li ng-repeat="needCat3 in needCat2.children">
+                        <li ng-repeat="needCat3 in needCat2.children" ng-if="needCat3.value == 1 || needCat3.children.length > 0">
                           <h3 ng-bind="needCat3.name"></h3>
                           <ul ng-if="needCat3.children !== undefined">
-                            <li ng-repeat="needCat4 in needCat3.children">
+                            <li ng-repeat="needCat4 in needCat3.children" ng-if="needCat4.value == 1 || needCat4.children.length > 0">
                               <h4 ng-bind="needCat4.name"></h4>
                               <ul ng-if="needCat4.children !== undefined">
-                                <li ng-repeat="needCat5 in needCat4.children" ng-if="needCat5.value == 1">
+                                <li ng-repeat="needCat5 in needCat4.children" ng-if="needCat5.value == 1 || needCat5.children.length > 0">
                                   <h5 ng-bind="needCat5.name"></h5>
                                 </li>
                               </ul>
