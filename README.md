@@ -5,9 +5,11 @@ Here@Help - for disaster mitigation and response! With awesomeness.
 
 ## Documentation
 
+You can access the site at http://hereathelp-web.azurewebsites.net
+
 Base API URL is
 
-* http://hereathelp-web.cloudapp.net/
+* http://hereathelp.cloudapp.net/
 
 ## BuiltWith
 
