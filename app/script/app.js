@@ -97,9 +97,7 @@
             $rootScope.showItem = function(id) {
                 $rootScope.currentItem = ItemService.get(parseInt(id));
 
-                console.log($rootScope.currentItem);
                 _.each($rootScope.areaMaps, function(x, i) {
-                    console.log($rootScope.currentItem.geobounds);
                     if($rootScope.areaMaps[i].bounds == null) {
                         $rootScope.areaMaps[i].bounds = w.L.polygon($rootScope.currentItem.geobounds, { color: '#0000FF', weight: 8, fill: false });
                         $rootScope.areaMaps[i].map.addLayer($rootScope.areaMaps[i].bounds);
@@ -107,7 +105,6 @@
                     else
                         $rootScope.areaMaps[i].bounds.setLatLngs($rootScope.currentItem.geobounds);
 
-                    console.log($rootScope.currentItem);
                     $rootScope.areaMaps[i].map.panTo($rootScope.currentItem.location.coords.split(','));
 
                     if($rootScope.areaMaps[i].marker == null)
@@ -154,12 +151,10 @@
                         $rootScope.items[i]['geobounds'] = geobounds;
 
                         _.each($rootScope.items[i].needs, function(y, j) {
-                            var json = JSON.parse($rootScope.items[i].needs[j].provision);
+                            var json = JSON.parse($rootScope.items[i].needs[j].provision.content);
 
-                            $rootScope.items[i].needs[j].provision = json;
+                            $rootScope.items[i].needs[j].provision = json.priorities;
                         });
-
-                        console.log($rootScope.items[i]);
 
                         w.angular.element(document).ready(function() {
                             if($rootScope.dashboardMap == null) {

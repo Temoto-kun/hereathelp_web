@@ -1,265 +1,270 @@
 <!DOCTYPE html>
 <html ng-app="hereathelp">
 <head>
-    <meta charset="utf-8">
-    <title>{{ 'APP_ID' | translate }}</title>
+  <meta charset="utf-8">
+  <title ng-bind="'APP_ID' | translate">Here@Help</title>
 
-    <!-- Core styles -->
-    <link rel="stylesheet" type="text/css" href="lib/style/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="lib/style/font-awesome/css/font-awesome.min.css">
+  <!-- Core styles -->
+  <link rel="stylesheet" type="text/css" href="lib/style/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="lib/style/font-awesome/css/font-awesome.min.css">
 
-    <!-- Helper libs -->
-    <script type="text/javascript" src="lib/script/underscore/underscore-min.js"></script>
-    <script type="text/javascript" src="lib/script/angular/angular.min.js"></script>
+  <!-- Helper libs -->
+  <script type="text/javascript" src="lib/script/underscore/underscore-min.js"></script>
+  <script type="text/javascript" src="lib/script/angular/angular.min.js"></script>
 
-    <!-- UI scripts -->
-    <script type="text/javascript" src="lib/script/angular/ui-bootstrap-tpls-0.11.0.min.js"></script>
-    <script type="text/javascript" src="lib/script/angular/angular-ui-router/angular-ui-router.min.js"></script>
-    <script type="text/javascript" src="lib/script/angular/angular-translate/angular-translate.min.js"></script>
+  <!-- UI scripts -->
+  <script type="text/javascript" src="lib/script/angular/ui-bootstrap-tpls-0.11.0.min.js"></script>
+  <script type="text/javascript" src="lib/script/angular/angular-ui-router/angular-ui-router.min.js"></script>
+  <script type="text/javascript" src="lib/script/angular/angular-translate/angular-translate.min.js"></script>
 
-    <!-- Map scripts -->
-    <link rel="stylesheet" type="text/css" href="lib/script/leaflet/leaflet.css">
-    <script type="text/javascript" src="lib/script/leaflet/leaflet.js"></script>
+  <!-- Map scripts -->
+  <link rel="stylesheet" type="text/css" href="lib/script/leaflet/leaflet.css">
+  <script type="text/javascript" src="lib/script/leaflet/leaflet.js"></script>
 
-    <style type="text/css">
-        html {
-            width: 100%;
-            height: 100%;
-        }
+  <style type="text/css">
+    html {
+      width: 100%;
+      height: 100%;
+    }
 
-        body {
-            width: 100%;
-            height: 100%;
-            padding-top: 70px;
-            padding-bottom: 8px;
-        }
+    body {
+      width: 100%;
+      height: 100%;
+      padding-top: 70px;
+      padding-bottom: 8px;
+    }
 
-        .navbar-brand .app-logo {
-            position: relative;
-            bottom: 25%;
-            max-width: 144px;
-        }
+    .navbar-brand .app-logo {
+      position: relative;
+      bottom: 25%;
+      max-width: 144px;
+    }
 
-        #dashboard-map {
-            height: 400px;
-        }
+    #dashboard-map {
+      height: 400px;
+    }
 
-        .area-map {
-            height: 400px;
-        }
-    </style>
+    .area-map {
+      height: 400px;
+    }
+  </style>
 </head>
 <body>
 <header class="navbar navbar-default navbar-fixed-top">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar"
-                    ng-click="navbarCollapsed = !navbarCollapsed">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" ui-sref="items" ng-click="hideItem()">
-                <img class="app-logo" src="app/images/Here@Help%20alt%20monochrome.png"
-                     alt="{{ 'APP_ID' | translate }}">
-            </a>
-        </div>
-
-        <div class="collapse navbar-collapse" id="navbar" collapse="!navbarCollapsed">
-            <ul class="nav navbar-nav">
-                <li ng-class="isState('dashboard') ? 'active' : ''"><a ui-sref="dashboard" ng-click="navbarCollapsed = false">Dashboard</a></li>
-                <li ng-class="isState('items') ? 'active' : ''"><a ui-sref="items" ng-click="navbarCollapsed = false">Stream</a></li>
-            </ul>
-            <form class="navbar-form navbar-left" role="search" ng-if="search">
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search">
-                </div>
-                <button type="submit" class="btn btn-default">Submit</button>
-            </form>
-        </div>
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar"
+              ng-click="navbarCollapsed = !navbarCollapsed">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" ui-sref="items" ng-click="hideItem()">
+        <img class="app-logo" src="app/images/Here@Help%20alt%20monochrome.png"
+             alt="{{ 'APP_ID' | translate }}">
+      </a>
     </div>
+
+    <div class="collapse navbar-collapse" id="navbar" collapse="!navbarCollapsed">
+      <ul class="nav navbar-nav">
+        <li ng-class="isState('dashboard') ? 'active' : ''"><a ui-sref="dashboard" ng-click="navbarCollapsed = false">Dashboard</a>
+        </li>
+        <li ng-class="isState('items') ? 'active' : ''"><a ui-sref="items" ng-click="navbarCollapsed = false">Stream</a>
+        </li>
+      </ul>
+      <form class="navbar-form navbar-left" role="search" ng-if="search">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search">
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+      </form>
+    </div>
+  </div>
 </header>
 
 <div style="height: 100%">
-    <div style="height: 100%;" class="container-fluid" ng-hide="!isState('items')">
-        <div class="row hidden-xs " style="height: 100%;">
-            <div class="col-sm-6" style="height: 100%; overflow-y: auto;">
-                <div class="panel panel-default" ng-repeat="item in items">
-                    <div class="panel-heading">
-                        Icons
-                    </div>
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-xs-3">
-                                Disaster
-                            </div>
-                            <div class="col-xs-9 text-right">
-                                <time>{{ item.created_at }}</time>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-6">
-                                <h2><a href="" ng-click="showItem(item.id)" ng-bind="item.location.nameString"></a></h2>
-                            </div>
-                            <div class="col-xs-6 text-right">
-                                Alive: {{ item.est_alive }} | Dead: {{ item.est_dead }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  <div style="height: 100%;" class="container-fluid" ng-hide="!isState('items')">
+    <div class="row hidden-xs " style="height: 100%;">
+      <div class="col-sm-6" style="height: 100%; overflow-y: auto;">
+        <div class="panel panel-default" ng-repeat="item in items">
+          <div class="panel-heading">
+            Icons
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-xs-3">
+                Disaster
+              </div>
+              <div class="col-xs-9 text-right">
+                <time ng-bind="item.created_at"></time>
+              </div>
             </div>
-            <div class="col-sm-6" style="height: 100%;  overflow-y: auto;" ng-hide="currentItem == null">
-                <div>
-                    <div>
-                        <div class="row">
-                            <div class="col-xs-3">
-                                Disaster
-                            </div>
-                            <div class="col-xs-9 text-right">
-                                <time>{{ currentItem.created_at }}</time>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-6">
-                                <h2 ng-bind="currentItem.location.nameString"></h2>
-                            </div>
-                            <div class="col-xs-6 text-right">
-                                Alive: {{ currentItem.est_alive }} | Dead: {{ currentItem.est_dead }}
-                            </div>
-                        </div>
-                    </div>
-                    <tabset justified="false" type="pills">
-                        <tab heading="Area">
-                            <div id="area-map" class="area-map"></div>
-                        </tab>
-                        <tab heading="Needs">
-                            <tabset justified="false">
-                                <tab ng-repeat="needCat1 in currentItem.needs">
-                                    <tab-heading>
-                                        {{ needCat1.title }}
-                                    </tab-heading>
-                                    <ul>
-                                        <li ng-repeat="needCat2 in needCat1.children">
-                                            <h2>{{needCat2.name}}</h2>
-                                            <ul ng-if="needCat2.children !== undefined">
-                                                <li ng-repeat="needCat3 in needCat2.children">
-                                                    <h3>{{needCat3.name}}</h3>
-                                                    <ul ng-if="needCat3.children !== undefined">
-                                                        <li ng-repeat="needCat4 in needCat3.children">
-                                                            <h4>{{needCat4.name}}</h4>
-                                                            <ul ng-if="needCat4.children !== undefined">
-                                                                <li ng-repeat="needCat5 in needCat4.children">
-                                                                    <h5>{{needCat5.name}}</h5>
-                                                                </li>
-                                                            </ul>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </tab>
-                            </tabset>
-                        </tab>
-                    </tabset>
-                </div>
+            <div class="row">
+              <div class="col-xs-6">
+                <h2><a href="" ng-click="showItem(item.id)" ng-bind="item.location.nameString"></a></h2>
+              </div>
+              <div class="col-xs-6 text-right">
+                Alive: {{ item.est_alive }} | Dead: {{ item.est_dead }}
+              </div>
             </div>
+          </div>
         </div>
-        <div class="row visible-xs">
-            <div class="col-xs-12" ng-hide="currentItem != null">
-                <div class="panel panel-default" ng-repeat="item in items">
-                    <div class="panel-heading">
-                        Icons
-                    </div>
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-xs-3">
-                                Disaster
-                            </div>
-                            <div class="col-xs-9 text-right">
-                                <time>{{ item.created_at }}</time>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-6">
-                                <h2><a href="" ng-click="showItem(item.id)" ng-bind="item.location.nameString"></a></h2>
-                            </div>
-                            <div class="col-xs-6 text-right">
-                                Alive: {{ item.est_alive }} | Dead: {{ item.est_dead }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+      </div>
+      <div class="col-sm-6" style="height: 100%;  overflow-y: auto;" ng-hide="currentItem == null">
+        <div>
+          <div>
+            <div class="row">
+              <div class="col-xs-3">
+                Disaster
+              </div>
+              <div class="col-xs-9 text-right">
+                <time ng-bind="currentItem.created_at"></time>
+              </div>
             </div>
-            <div class="col-xs-12" ng-hide="currentItem == null">
-                <div>
-                    <div>
-                        <div class="row">
-                            <div class="col-xs-3">
-                                Disaster
-                            </div>
-                            <div class="col-xs-9 text-right">
-                                <time>{{ currentItem.created_at }}</time>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-6">
-                                <h2 ng-bind="currentItem.location.nameString"></h2>
-                            </div>
-                            <div class="col-xs-6 text-right">
-                                Alive: {{ currentItem.est_alive }} | Dead: {{ currentItem.est_dead }}
-                            </div>
-                        </div>
-                    </div>
-                    <tabset justified="false" type="pills">
-                        <tab heading="Area">
-                            <div id="area-map-mobile" class="area-map"></div>
-                        </tab>
-                        <tab heading="Needs">
-                            <tabset justified="false">
-                                <tab ng-repeat="needCat1 in currentItem.needs">
-                                    <tab-heading>
-                                        {{ needCat1.title }}
-                                    </tab-heading>
-                                    <ul>
-                                        <li ng-repeat="needCat2 in needCat1.children">
-                                            <h2>{{needCat2.name}}</h2>
-                                            <ul ng-if="needCat2.children !== undefined">
-                                                <li ng-repeat="needCat3 in needCat2.children">
-                                                    <h3>{{needCat3.name}}</h3>
-                                                    <ul ng-if="needCat3.children !== undefined">
-                                                        <li ng-repeat="needCat4 in needCat3.children">
-                                                            <h4>{{needCat4.name}}</h4>
-                                                            <ul ng-if="needCat4.children !== undefined">
-                                                                <li ng-repeat="needCat5 in needCat4.children">
-                                                                    <h5>{{needCat5.name}}</h5>
-                                                                </li>
-                                                            </ul>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </tab>
-                            </tabset>
-                        </tab>
-                    </tabset>
-                </div>
+            <div class="row">
+              <div class="col-xs-6">
+                <h2 ng-bind="currentItem.location.nameString"></h2>
+              </div>
+              <div class="col-xs-6 text-right">
+                Alive: {{ currentItem.est_alive }} | Dead: {{ currentItem.est_dead }}
+              </div>
             </div>
+          </div>
+          <tabset justified="false" type="pills">
+            <tab heading="Area">
+              <div id="area-map" class="area-map"></div>
+            </tab>
+            <tab heading="Needs">
+              <tabset justified="false">
+                <tab ng-repeat="needCat1 in currentItem.needs">
+                  <tab-heading ng-if="needCat1.value == 1">
+                    {{ needCat1.title }}
+                  </tab-heading>
+                  <ul>
+                    <li ng-repeat="needCat2 in needCat1.provision" ng-if="needCat2.value == 1">
+                      <h2 ng-bind="needCat2.name"></h2>
+                      <ul ng-if="needCat2.children !== undefined">
+                        <li ng-repeat="needCat3 in needCat2.children" ng-if="needCat3.value == 1">
+                          <h3 ng-bind="needCat3.name"></h3>
+                          <ul ng-if="needCat3.children !== undefined">
+                            <li ng-repeat="needCat4 in needCat3.children" ng-if="needCat4.value == 1">
+                              <h4 ng-bind="needCat4.name"></h4>
+                              <ul ng-if="needCat4.children !== undefined">
+                                <li ng-repeat="needCat5 in needCat4.children" ng-if="needCat5.value == 1">
+                                  <h5 ng-bind="needCat5.name"></h5>
+                                </li>
+                              </ul>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </tab>
+              </tabset>
+            </tab>
+          </tabset>
         </div>
+      </div>
     </div>
-    <div class="container-fluid" ng-hide="!isState('dashboard')">
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="jumbotron">
-                    <h1>{{ items.length }} <small>places needing assistance</small></h1>
-                    <div id="dashboard-map"></div>
-                </div>
+    <div class="row visible-xs">
+      <div class="col-xs-12" ng-hide="currentItem != null">
+        <div class="panel panel-default" ng-repeat="item in items">
+          <div class="panel-heading">
+            Icons
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-xs-3">
+                Disaster
+              </div>
+              <div class="col-xs-9 text-right">
+                <time ng-bind="item.created_at"></time>
+              </div>
             </div>
+            <div class="row">
+              <div class="col-xs-6">
+                <h2><a href="" ng-click="showItem(item.id)" ng-bind="item.location.nameString"></a></h2>
+              </div>
+              <div class="col-xs-6 text-right">
+                Alive: {{ item.est_alive }} | Dead: {{ item.est_dead }}
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+      <div class="col-xs-12" ng-hide="currentItem == null">
+        <div>
+          <div>
+            <div class="row">
+              <div class="col-xs-3">
+                Disaster
+              </div>
+              <div class="col-xs-9 text-right">
+                <time ng-bind="currentItem.created_at"></time>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-6">
+                <h2 ng-bind="currentItem.location.nameString"></h2>
+              </div>
+              <div class="col-xs-6 text-right">
+                Alive: {{ currentItem.est_alive }} | Dead: {{ currentItem.est_dead }}
+              </div>
+            </div>
+          </div>
+          <tabset justified="false" type="pills">
+            <tab heading="Area">
+              <div id="area-map-mobile" class="area-map"></div>
+            </tab>
+            <tab heading="Needs">
+              <tabset justified="false">
+                <tab ng-repeat="needCat1 in currentItem.needs">
+                  <tab-heading>
+                    {{ needCat1.title }}
+                  </tab-heading>
+                  <ul>
+                    <li ng-repeat="needCat2 in needCat1.provision"
+                        ng-if="needCat2.value == 1">
+                      <h2 ng-bind="needCat2.name"></h2>
+                      <ul ng-if="needCat2.children !== undefined">
+                        <li ng-repeat="needCat3 in needCat2.children">
+                          <h3 ng-bind="needCat3.name"></h3>
+                          <ul ng-if="needCat3.children !== undefined">
+                            <li ng-repeat="needCat4 in needCat3.children">
+                              <h4 ng-bind="needCat4.name"></h4>
+                              <ul ng-if="needCat4.children !== undefined">
+                                <li ng-repeat="needCat5 in needCat4.children" ng-if="needCat5.value == 1">
+                                  <h5 ng-bind="needCat5.name"></h5>
+                                </li>
+                              </ul>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </tab>
+              </tabset>
+            </tab>
+          </tabset>
+        </div>
+      </div>
     </div>
+  </div>
+  <div class="container-fluid" ng-hide="!isState('dashboard')">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="jumbotron">
+          <h1>{{ items.length }}
+            <small>places needing assistance</small>
+          </h1>
+          <div id="dashboard-map"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- App scripts -->
